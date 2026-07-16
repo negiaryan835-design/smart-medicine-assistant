@@ -10,33 +10,33 @@ import {
   FaSignOutAlt,
 } from "react-icons/fa";
 
-function Sidebar() {
+function Sidebar({ setActivePage }) {
   return (
     <div className="sidebar">
       <h2>Smart Medicine Assistant</h2>
 
       <ul>
-        <li>
+        <li onClick={() => setActivePage("dashboard")}>
           <FaHome /> Dashboard
         </li>
 
-        <li>
+        <li onClick={() => setActivePage("scan")}>
           <FaCamera /> Scan Medicine
         </li>
 
-        <li>
+        <li onClick={() => setActivePage("medicines")}>
           <FaPills /> My Medicines
         </li>
 
-        <li>
+        <li onClick={() => setActivePage("reminders")}>
           <FaBell /> Reminders
         </li>
 
-        <li>
+        <li onClick={() => setActivePage("history")}>
           <FaHistory /> History
         </li>
 
-        <li>
+        <li onClick={() => setActivePage("settings")}>
           <FaCog /> Settings
         </li>
       </ul>
