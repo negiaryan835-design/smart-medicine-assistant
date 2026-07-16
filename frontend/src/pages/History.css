@@ -1,0 +1,42 @@
+.history-page {
+  padding: 40px;
+}
+
+.page-header h1 {
+  font-size: 36px;
+  margin-bottom: 10px;
+}
+
+.page-header p {
+  color: #6b7280;
+  font-size: 18px;
+}
+
+.history-card {
+  margin-top: 35px;
+  background-color: white;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  padding: 25px;
+  max-width: 700px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.history-card h2 {
+  margin-bottom: 15px;
+}
+
+.history-card p {
+  color: #6b7280;
+  margin: 6px 0;
+}
+
+.history-status {
+  background-color: #dbeafe;
+  color: #1d4ed8;
+  padding: 8px 16px;
+  border-radius: 20px;
+  font-weight: bold;
+}

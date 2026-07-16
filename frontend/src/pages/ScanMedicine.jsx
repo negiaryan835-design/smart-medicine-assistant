@@ -5,11 +5,13 @@ function ScanMedicine() {
   const [selectedImage, setSelectedImage] = useState(null);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [medicineResult, setMedicineResult] = useState(null);
+  const [imageFile, setImageFile] = useState(null);
 
   function handleImageChange(event) {
     const file = event.target.files[0];
 
     if (file) {
+      setImageFile(file);  
       setSelectedImage(URL.createObjectURL(file));
     }
   }
@@ -32,6 +34,7 @@ function ScanMedicine() {
 function handleScanAgain() {
   setSelectedImage(null);
   setMedicineResult(null);
+  setImageFile(null);
 }
 
   return (
