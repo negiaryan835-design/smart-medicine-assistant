@@ -1,0 +1,43 @@
+.reminders-page {
+  padding: 40px;
+}
+
+.page-header h1 {
+  font-size: 36px;
+  margin-bottom: 10px;
+}
+
+.page-header p {
+  color: #6b7280;
+  font-size: 18px;
+}
+
+.reminders-list {
+  margin-top: 35px;
+  max-width: 750px;
+}
+
+.reminder-item {
+  background-color: white;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  padding: 25px;
+  margin-bottom: 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.reminder-item h2 {
+  margin-bottom: 12px;
+}
+
+.reminder-item p {
+  color: #6b7280;
+  margin: 6px 0;
+}
+
+.reminder-time {
+  font-size: 20px;
+  font-weight: bold;
+}

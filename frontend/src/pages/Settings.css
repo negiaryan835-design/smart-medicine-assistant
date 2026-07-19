@@ -1,0 +1,53 @@
+.settings-page {
+  padding: 40px;
+}
+
+.page-header h1 {
+  font-size: 36px;
+  margin-bottom: 10px;
+}
+
+.page-header p {
+  color: #6b7280;
+  font-size: 18px;
+}
+
+.settings-card {
+  margin-top: 30px;
+  background-color: white;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  padding: 25px;
+  max-width: 700px;
+}
+
+.settings-card h2 {
+  margin-bottom: 10px;
+}
+
+.settings-card p {
+  color: #6b7280;
+  margin-bottom: 20px;
+}
+
+.toggle-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-weight: bold;
+}
+
+.toggle-row input {
+  width: 20px;
+  height: 20px;
+}
+
+.settings-button {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 8px;
+  background-color: #2563eb;
+  color: white;
+  cursor: pointer;
+  font-size: 15px;
+}
