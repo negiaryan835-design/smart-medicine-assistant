@@ -28,12 +28,14 @@ def predict_refill(tablets_left, tablets_per_day, days_since_start):
     }
 
 
-# Test prediction
-result = predict_refill(
-    tablets_left=20,
-    tablets_per_day=2,
-    days_since_start=5
-)
 
-print("Prediction:")
-print(result)
+# Test prediction
+if __name__ == "__main__":
+    result = predict_refill(
+        tablets_left=20,
+        tablets_per_day=2,
+        days_since_start=5
+    )
+
+    print("Prediction:")
+    print(result)
