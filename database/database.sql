@@ -60,6 +60,7 @@ CREATE TABLE `medicines` (
   `Quantity` int NOT NULL,
   `DailyDose` int NOT NULL,
   `ReminderTime` time NOT NULL,
+  `StartDate` date DEFAULT NULL,
   PRIMARY KEY (`MedicineID`),
   KEY `fk_parent_child_idx` (`UserID`),
   CONSTRAINT `fk_parent_child` FOREIGN KEY (`UserID`) REFERENCES `users` (`UserID`) ON DELETE CASCADE
@@ -72,8 +73,56 @@ CREATE TABLE `medicines` (
 
 LOCK TABLES `medicines` WRITE;
 /*!40000 ALTER TABLE `medicines` DISABLE KEYS */;
-INSERT INTO `medicines` VALUES (1,1,'Dolo 650','2028-05-31',20,2,'08:00:00'),(2,1,'Cetirizine','2027-08-20',16,1,'21:00:00'),(3,2,'Crocin 500','2027-06-16',15,1,'22:00:00');
+INSERT INTO `medicines` VALUES
+(1,1,'Dolo 650','2028-05-31',20,2,'08:00:00',NULL),
+(2,1,'Cetirizine','2027-08-20',16,1,'21:00:00',NULL),
+(3,2,'Crocin 500','2027-06-16',15,1,'22:00:00',NULL);
 /*!40000 ALTER TABLE `medicines` ENABLE KEYS */;
+UNLOCK TABLES;
+--
+-- Table structure for table `medicinecatalog`
+--
+
+DROP TABLE IF EXISTS `medicinecatalog`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `medicinecatalog` (
+  `CatalogID` int NOT NULL AUTO_INCREMENT,
+  `MedicineName` varchar(100) NOT NULL,
+  PRIMARY KEY (`CatalogID`),
+  UNIQUE KEY `MedicineName_UNIQUE` (`MedicineName`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `medicinecatalog`
+--
+
+LOCK TABLES `medicinecatalog` WRITE;
+/*!40000 ALTER TABLE `medicinecatalog` DISABLE KEYS */;
+INSERT INTO `medicinecatalog` (`MedicineName`) VALUES
+('Acretin 30 g cream'),
+('All-Vent 125 ml syrup'),
+('Augmentin 14 tablets'),
+('B.B.C. 25 ml spray solution'),
+('Betaderm 30 gm cream'),
+('Bronchopro 100 ml syrup'),
+('Brufen 30 tablets'),
+('Cataflam 20 tablets'),
+('Comfort Massage Gel 50 gm gel'),
+('Congestal 20 tablets'),
+('Diclac 30 gm gel'),
+('Flagyl 20 tablets'),
+('Frost 100 ml spray'),
+('Fucidin 20 g cream'),
+('Glucophage 50 tablets'),
+('Pandermal 15 g cream'),
+('Paramol 20 tablets'),
+('Reparil-Gel N 40 g gel'),
+('Tentavair 160 mcg oral inhalation'),
+('Visceralgine 120 ml syrup'),
+('Zantac 20 tablets');
+/*!40000 ALTER TABLE `medicinecatalog` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
