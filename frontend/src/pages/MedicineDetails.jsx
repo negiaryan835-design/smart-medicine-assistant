@@ -1,23 +1,8 @@
-import { useState } from "react";
+import { useMedicines } from "../context/MedicineContext";
 import "./MedicineDetails.css";
 
 function MedicineDetails() {
-  const [medicines] = useState([
-    {
-      name: "Paracetamol",
-      dosage: "500 mg",
-      expiry: "December 2027",
-      manufacturer: "Example Pharma",
-      status: "Active",
-    },
-    {
-      name: "Vitamin D",
-      dosage: "1000 IU",
-      expiry: "August 2026",
-      manufacturer: "Health Pharma",
-      status: "Active",
-    },
-  ]);
+  const { medicines } = useMedicines();
 
   return (
     <div className="medicine-details">
@@ -26,25 +11,29 @@ function MedicineDetails() {
         <p>View and manage your saved medicines.</p>
       </div>
 
-      <div className="medicine-list">
-        {medicines.map((medicine, index) => (
-          <div className="medicine-card" key={index}>
-            <div>
-              <h2>{medicine.name}</h2>
+      {medicines.length === 0 ? (
+        <div className="empty-state">
+          <h2>No medicines saved yet</h2>
+          <p>Scan a medicine to add it to your collection.</p>
+        </div>
+      ) : (
+        <div className="medicine-list">
+          {medicines.map((medicine, index) => (
+            <div className="medicine-card" key={index}>
+              <div>
+                <h2>{medicine.name}</h2>
+                <p>Dosage: {medicine.dosage}</p>
+                <p>Expiry: {medicine.expiry}</p>
+                <p>Manufacturer: {medicine.manufacturer}</p>
+              </div>
 
-              <p>Dosage: {medicine.dosage}</p>
-
-              <p>Expiry: {medicine.expiry}</p>
-
-              <p>Manufacturer: {medicine.manufacturer}</p>
+              <span className="medicine-status">
+                Active
+              </span>
             </div>
-
-            <span className="medicine-status">
-              {medicine.status}
-            </span>
-          </div>
-        ))}
-      </div>
+          ))}
+        </div>
+      )}
     </div>
   );
 }

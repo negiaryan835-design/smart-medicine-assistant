@@ -114,3 +114,19 @@
 .scan-again-button:hover {
   background-color: #eff6ff;
 }
+
+.save-medicine-button {
+  margin-top: 15px;
+  margin-right: 10px;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 8px;
+  background-color: #16a34a;
+  color: white;
+  font-size: 15px;
+  cursor: pointer;
+}
+
+.save-medicine-button:hover {
+  background-color: #15803d;
+}
