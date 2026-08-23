@@ -10,6 +10,14 @@ function ScanMedicine() {
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [medicineResult, setMedicineResult] = useState(null);
 
+  const [quantity, setQuantity] = useState("");
+  const [dailyDose, setDailyDose] = useState("");
+  const [startDate, setStartDate] = useState(
+    new Date().toISOString().split("T")[0]
+  );
+  const [expiryDate, setExpiryDate] = useState("");
+  const [reminderTime, setReminderTime] = useState("");
+
   function handleImageChange(event) {
     const file = event.target.files[0];
 
@@ -20,36 +28,122 @@ function ScanMedicine() {
     }
   }
 
-  function handleAnalyze() {
-    if (!imageFile) {
-      return;
-    }
+  async function handleAnalyze() {
+    if (!imageFile) return;
 
     setIsAnalyzing(true);
 
-    setTimeout(() => {
-      setIsAnalyzing(false);
+    const formData = new FormData();
+    formData.append("file", imageFile);
+
+    try {
+      const response = await fetch("http://127.0.0.1:8000/predict", {
+        method: "POST",
+        body: formData,
+      });
+
+      if (!response.ok) {
+        throw new Error("Prediction failed");
+      }
+
+      const data = await response.json();
 
       setMedicineResult({
-        name: "Paracetamol",
-        dosage: "500 mg",
-        expiry: "December 2027",
-        manufacturer: "Example Pharma",
+        name: data.medicine,
+        confidence: data.confidence,
+        dosage: data.ocr?.strength || "Not available",
+        manufacturer: data.ocr?.manufacturer || "Not available",
       });
-    }, 2000);
-  }
-
-  function handleSaveMedicine() {
-    if (medicineResult) {
-      addMedicine(medicineResult);
-      alert("Medicine saved successfully!");
+    } catch (error) {
+      console.error(error);
+      alert("Could not analyze the medicine.");
+    } finally {
+      setIsAnalyzing(false);
     }
   }
+
+  async function handleSaveMedicine() {
+  if (!medicineResult) return;
+
+  if (!quantity || !dailyDose || !expiryDate || !reminderTime) {
+    alert("Please fill all medicine details.");
+    return;
+  }
+
+  const medicineData = {
+    UserID: 1,
+    MedicineName: medicineResult.name,
+    ExpiryDate: expiryDate,
+    Quantity: Number(quantity),
+    DailyDose: Number(dailyDose),
+    ReminderTime: reminderTime,
+    StartDate: startDate,
+  };
+
+  try {
+    const response = await fetch("http://127.0.0.1:8000/medicines", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(medicineData),
+    });
+
+    if (!response.ok) {
+      throw new Error("Failed to save medicine");
+    }
+
+    const refillResponse = await fetch(
+      "http://127.0.0.1:8000/refill-prediction",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          quantity_left: Number(quantity),
+          daily_dose: Number(dailyDose),
+          adherence_rate: 1.0,
+          missed_doses: 0,
+        }),
+      }
+    );
+
+    if (!refillResponse.ok) {
+      throw new Error("Refill prediction failed");
+    }
+
+    const refillData = await refillResponse.json();
+
+    const savedMedicine = {
+      ...medicineResult,
+      ...medicineData,
+      predictedDaysUntilRefill:
+        refillData.predicted_days_until_refill,
+      predictedRefillDate:
+        refillData.predicted_refill_date,
+    };
+
+    addMedicine(savedMedicine);
+
+    setMedicineResult(savedMedicine);
+
+    alert("Medicine saved and refill prediction calculated!");
+  } catch (error) {
+    console.error(error);
+    alert("Could not save medicine.");
+  }
+}
 
   function handleScanAgain() {
     setSelectedImage(null);
     setImageFile(null);
     setMedicineResult(null);
+    setQuantity("");
+    setDailyDose("");
+    setExpiryDate("");
+    setReminderTime("");
+    setStartDate(new Date().toISOString().split("T")[0]);
   }
 
   return (
@@ -106,19 +200,87 @@ function ScanMedicine() {
             </div>
 
             <div className="result-item">
-              <strong>Dosage:</strong>
-              <span>{medicineResult.dosage}</span>
+              <strong>Confidence:</strong>
+              <span>
+                {(medicineResult.confidence * 100).toFixed(2)}%
+              </span>
             </div>
 
             <div className="result-item">
-              <strong>Expiry Date:</strong>
-              <span>{medicineResult.expiry}</span>
+              <strong>Strength:</strong>
+              <span>{medicineResult.dosage}</span>
             </div>
 
             <div className="result-item">
               <strong>Manufacturer:</strong>
               <span>{medicineResult.manufacturer}</span>
             </div>
+
+            <div className="result-item">
+              <strong>Quantity:</strong>
+              <input
+                type="number"
+                min="1"
+                value={quantity}
+                onChange={(e) => setQuantity(e.target.value)}
+                placeholder="e.g. 14"
+              />
+            </div>
+
+            <div className="result-item">
+              <strong>Daily Dose:</strong>
+              <input
+                type="number"
+                min="1"
+                value={dailyDose}
+                onChange={(e) => setDailyDose(e.target.value)}
+                placeholder="e.g. 2"
+              />
+            </div>
+
+            <div className="result-item">
+              <strong>Start Date:</strong>
+              <input
+                type="date"
+                value={startDate}
+                onChange={(e) => setStartDate(e.target.value)}
+              />
+            </div>
+
+            <div className="result-item">
+              <strong>Expiry Date:</strong>
+              <input
+                type="date"
+                value={expiryDate}
+                onChange={(e) => setExpiryDate(e.target.value)}
+              />
+            </div>
+
+            <div className="result-item">
+              <strong>Reminder Time:</strong>
+              <input
+                type="time"
+                value={reminderTime}
+                onChange={(e) => setReminderTime(e.target.value)}
+              />
+            </div>
+            {medicineResult.predictedDaysUntilRefill !== undefined && (
+  <>
+    <div className="result-item">
+      <strong>Refill In:</strong>
+      <span>
+        {medicineResult.predictedDaysUntilRefill} days
+      </span>
+    </div>
+
+    <div className="result-item">
+      <strong>Predicted Refill Date:</strong>
+      <span>
+        {medicineResult.predictedRefillDate}
+      </span>
+    </div>
+  </>
+)}
 
             <button
               className="save-medicine-button"
@@ -140,4 +302,4 @@ function ScanMedicine() {
   );
 }
 
-export default ScanMedicine;
+export default ScanMedicine;  
