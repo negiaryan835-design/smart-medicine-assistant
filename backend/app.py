@@ -6,6 +6,7 @@ from routes.history import router as history_router
 from routes.predict import router as predict_router
 from routes.refill import router as refill_router
 from fastapi.middleware.cors import CORSMiddleware
+from routes.adherence import router as adherence_router
 
 app = FastAPI()
 
@@ -23,6 +24,7 @@ app.include_router(reminder_router)
 app.include_router(history_router)
 app.include_router(predict_router)
 app.include_router(refill_router)
+app.include_router(adherence_router)
 
 @app.get("/")
 def home():

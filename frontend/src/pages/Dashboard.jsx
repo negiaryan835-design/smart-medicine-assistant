@@ -1,25 +1,46 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import "./Dashboard.css";
 
 function Dashboard() {
-  const [stats] = useState({
-    totalMedicines: 2,
-    activeReminders: 3,
-    medicinesScanned: 5,
+  const [stats, setStats] = useState({
+    totalMedicines: 0,
+    activeReminders: 0,
+    medicinesScanned: 0,
   });
 
-  const [reminders] = useState([
-    {
-      medicine: "Paracetamol",
-      dosage: "500 mg",
-      time: "10:00 AM",
-    },
-    {
-      medicine: "Vitamin D",
-      dosage: "1000 IU",
-      time: "8:00 PM",
-    },
-  ]);
+  const [reminders, setReminders] = useState([]);
+
+  useEffect(() => {
+    async function loadDashboard() {
+      try {
+        const dashboardResponse = await fetch(
+          "http://127.0.0.1:8000/dashboard"
+        );
+
+        if (!dashboardResponse.ok) {
+          throw new Error("Failed to load dashboard");
+        }
+
+        const dashboardData = await dashboardResponse.json();
+        setStats(dashboardData);
+
+        const remindersResponse = await fetch(
+          "http://127.0.0.1:8000/reminders"
+        );
+
+        if (!remindersResponse.ok) {
+          throw new Error("Failed to load reminders");
+        }
+
+        const remindersData = await remindersResponse.json();
+        setReminders(remindersData);
+      } catch (error) {
+        console.error("Could not load dashboard:", error);
+      }
+    }
+
+    loadDashboard();
+  }, []);
 
   return (
     <div className="dashboard">
@@ -51,16 +72,20 @@ function Dashboard() {
       <div className="reminders-section">
         <h2>Upcoming Reminders</h2>
 
-        {reminders.map((reminder, index) => (
-          <div className="reminder-card" key={index}>
-            <div>
-              <h3>{reminder.medicine}</h3>
-              <p>Dosage: {reminder.dosage}</p>
-            </div>
+        {reminders.length === 0 ? (
+          <p>No reminders available.</p>
+        ) : (
+          reminders.map((reminder, index) => (
+            <div className="reminder-card" key={index}>
+              <div>
+                <h3>{reminder.MedicineName}</h3>
+                <p>Daily Dose: {reminder.DailyDose}</p>
+              </div>
 
-            <strong>{reminder.time}</strong>
-          </div>
-        ))}
+              <strong>{reminder.ReminderTime}</strong>
+            </div>
+          ))
+        )}
       </div>
     </div>
   );
